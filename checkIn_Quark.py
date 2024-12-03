@@ -4,6 +4,7 @@ import sys
 import requests 
 
 cookie_list = os.getenv("COOKIE_QUARK").split('\n|&&')
+sckey = os.getenv("SCKEY")
 
 sc_enable = False
 
