@@ -37,6 +37,7 @@ def get_env_cookie():
 
 # 获取sckey环境变量
 def get_env_sckey():
+    global sc_enable
     # 判断 SCKEY是否存在于环境变量
     if "SCKEY" in os.environ:
         # 读取系统变量SCKEY变量
