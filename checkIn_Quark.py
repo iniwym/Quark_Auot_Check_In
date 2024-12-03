@@ -5,12 +5,22 @@ import requests
 
 cookie_list = os.getenv("COOKIE_QUARK").split('\n|&&')
 
+sc_enable = False
+
 # 替代 notify 功能
 def send(title, message):
     print(f"{title}: {message}")
 
-# 获取环境变量 
-def get_env(): 
+# ServerChan进行消息推送
+def sendServerChan(sckey, title, message):
+    sc_url = 'http://sctapi.ftqq.com/{}.send?title={}&desp={}'.format(sckey, title, message)
+    if sc_enable:
+        print('正在使用ServerChan进行消息推送……')
+        requests.get(url=sc_url)
+        print('ServerChan消息推送完成！')
+
+# 获取cookie环境变量
+def get_env_cookie():
     # 判断 COOKIE_QUARK是否存在于环境变量 
     if "COOKIE_QUARK" in os.environ: 
         # 读取系统变量以 \n 或 && 分割变量 
@@ -22,7 +32,21 @@ def get_env():
         # 脚本退出 
         sys.exit(0) 
 
-    return cookie_list 
+    return cookie_list
+
+# 获取sckey环境变量
+def get_env_sckey():
+    # 判断 SCKEY是否存在于环境变量
+    if "SCKEY" in os.environ:
+        # 读取系统变量SCKEY变量
+        sckey = os.environ.get('SCKEY')
+        sc_enable = True
+    else:
+        # 标准日志输出
+        print('❌未添加SCKEY变量')
+        send('夸克自动签到', '❌未添加SCKEY变量')
+
+    return sckey
 
 # 其他代码...
 
@@ -151,7 +175,10 @@ def main():
     '''
     msg = ""
     global cookie_quark
-    cookie_quark = get_env()
+    cookie_quark = get_env_cookie()
+
+    global sckey
+    sckey = get_env_sckey()
 
     print("✅ 检测到共", len(cookie_quark), "个夸克账号\n")
 
@@ -176,6 +203,11 @@ def main():
 
     try:
         send('夸克自动签到', msg)
+    except Exception as err:
+        print('%s\n❌ 错误，请查看运行日志！' % err)
+
+    try:
+        sendServerChan(sckey, '夸克自动签到', msg)
     except Exception as err:
         print('%s\n❌ 错误，请查看运行日志！' % err)
 

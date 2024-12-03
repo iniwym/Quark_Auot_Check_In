@@ -37,6 +37,9 @@
    - 打开你的 Fork 仓库，进入 **Settings -> Secrets and variables -> Actions**。
    - 点击 **New repository secret** 按钮，创建一个名为 `COOKIE_QUARK` 的 Secret。
    - 将刚才配置好的 Cookie 粘贴到值中，保存。
+   
+3. **补充ServerChan消息推送**
+> 在GitHub Secrets中，创建一个名为 `SCKEY` 的 Secret。
 
 ### 3. 启用 GitHub Actions
 

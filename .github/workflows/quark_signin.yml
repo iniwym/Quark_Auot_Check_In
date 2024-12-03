@@ -2,7 +2,7 @@ name: Quark Sign-in
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 每天 UTC 时间 1:00 执行，即北京时间 9:00
+    - cron: "30 22 * * *" # 北京时间上午06:30
 
   workflow_dispatch:  # 手动触发
 
@@ -24,5 +24,6 @@ jobs:
       - name: Run Quark Sign-in
         env:
           COOKIE_QUARK: ${{ secrets.COOKIE_QUARK }}
+          SCKEY: ${{ secrets.SCKEY }}
         run: |
           python checkIn_Quark.py
