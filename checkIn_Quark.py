@@ -5,8 +5,10 @@ import requests
 
 cookie_list = os.getenv("COOKIE_QUARK").split('\n|&&')
 sckey = os.getenv("SCKEY")
+lark_key = os.getenv("LARK_KEY")
 
 sc_enable = False
+lark_enable = False
 
 # 替代 notify 功能
 def send(title, message):
@@ -19,6 +21,25 @@ def sendServerChan(sckey, title, message):
         print('正在使用ServerChan进行消息推送……')
         requests.get(url=sc_url)
         print('ServerChan消息推送完成！')
+
+# 使用飞书机器人推送结果
+def larkBotMessage(lark_key, title, message):
+
+    msg = {
+        "msg_type": "text",
+        "content": {"text": "title: " + title + "; result: " + message}
+    }
+    webhook_url="https://open.feishu.cn/open-apis/bot/v2/hook/" + lark_key
+    headers = {
+        "Content-type": "application/json",
+        "charset":"utf-8"
+    }
+    msg_encode=json.dumps(msg,ensure_ascii=True).encode("utf-8")
+
+    if lark_enable:
+        print('正在使用飞书机器人进行消息推送……')
+        reponse=requests.post(url=webhook_url,data=msg_encode,headers=headers)
+        print('飞书机器人消息推送完成……')
 
 # 获取cookie环境变量
 def get_env_cookie():
@@ -49,6 +70,21 @@ def get_env_sckey():
         send('夸克自动签到', '❌未添加SCKEY变量')
 
     return sckey
+
+# 获取LARK_KEY环境变量
+def get_env_lark_key():
+    global lark_enable
+    # 判断 LARK_KEY是否存在于环境变量
+    if "LARK_KEY" in os.environ:
+        # 读取系统变量LARK_KEY变量
+        lark_key = os.environ.get('LARK_KEY')
+        lark_enable = True
+    else:
+        # 标准日志输出
+        print('❌未添加LARK_KEY变量')
+        send('夸克自动签到', '❌未添加LARK_KEY变量')
+
+    return lark_key
 
 # 其他代码...
 
@@ -182,6 +218,9 @@ def main():
     global sckey
     sckey = get_env_sckey()
 
+    global lark_key
+    lark_key = get_env_lark_key()
+
     print("✅ 检测到共", len(cookie_quark), "个夸克账号\n")
 
     i = 0
@@ -210,6 +249,11 @@ def main():
 
     try:
         sendServerChan(sckey, '夸克自动签到', msg)
+    except Exception as err:
+        print('%s\n❌ 错误，请查看运行日志！' % err)
+
+    try:
+        larkBotMessage(lark_key, '夸克自动签到', msg)
     except Exception as err:
         print('%s\n❌ 错误，请查看运行日志！' % err)
 

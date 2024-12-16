@@ -2,7 +2,7 @@ name: Quark Sign-in
 
 on:
   schedule:
-    - cron: "30 22 * * *" # 北京时间上午06:30
+    - cron: "0 2 * * *" # 北京时间上午10:00
 
   workflow_dispatch:  # 手动触发
 
@@ -25,5 +25,6 @@ jobs:
         env:
           COOKIE_QUARK: ${{ secrets.COOKIE_QUARK }}
           SCKEY: ${{ secrets.SCKEY }}
+          LARK_KEY: ${{ secrets.LARK_KEY }}
         run: |
           python checkIn_Quark.py
