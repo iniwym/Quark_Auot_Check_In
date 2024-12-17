@@ -28,7 +28,7 @@ def larkBotMessage(lark_key, title, message):
 
     msg = {
         "msg_type": "text",
-        "content": {"text": "title: " + title + "; result: " + message}
+        "content": {"text": f"{title}\n{message}" }
     }
     webhook_url="https://open.feishu.cn/open-apis/bot/v2/hook/" + lark_key
     headers = {
@@ -254,7 +254,7 @@ def main():
         print('%s\n❌ 错误，请查看运行日志！' % err)
 
     try:
-        larkBotMessage(lark_key, '夸克自动签到', msg)
+        larkBotMessage(lark_key, '夸克自动签到任务', msg)
     except Exception as err:
         print('%s\n❌ 错误，请查看运行日志！' % err)
 
